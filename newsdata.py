@@ -3,6 +3,7 @@ import psycopg2
 
 DBNAME = "news"
 
+
 def connect(database_name):
     """Connect to the PostgreSQL database.  Returns a database connection."""
     try:
@@ -12,11 +13,12 @@ def connect(database_name):
     except psycopg2.Error as e:
         print("Unable to connect to database")
         # THEN perhaps exit the program
-        sys.exit(1) # The easier method
+        sys.exit(1)  # The easier method
         # OR perhaps throw an error
         raise e
         # If you choose to raise an exception,
         # It will need to be caught by the whoever called this function
+
 
 def get_query_results(query):
     # connect to database, grab cursor
@@ -29,6 +31,7 @@ def get_query_results(query):
     db.close()
     # return results
     return results
+
 
 if __name__ == '__main__':
 
