@@ -49,12 +49,10 @@ if __name__ == '__main__':
     author_views desc;"
 
     """On which days did more than 1% of requests lead to errors?"""
-    query3 = "select log_date, round((times * 100 / sum(times) over()), 1) as percentage \
-    from (with error_nums as (select A.time::date as log_date, \
-    count(A.status) as times from log as A where \
-    A.status like '404%' group by log_date) select log_date, \
-    times from error_nums where times > (select avg(times) from error_nums) \
-    order by log_date) as K;"
+    query3 = "select to_char(date, 'FMMonth FMDD, YYYY'), err/total as ratio \
+    from (select time::date as date, count(*) as total, \
+    sum((status != '200 OK')::int)::float as err from log \
+    group by date) as errors where err/total > 0.01;"
 
     print("1. What are the most popular three articles of all time?")
     results = get_query_results(query1)
@@ -67,4 +65,4 @@ if __name__ == '__main__':
     print("3. On which days did more than 1% of requests lead to errors?")
     results = get_query_results(query3)
     for el in results:
-        print(el[0].strftime("%b %d, %Y") + " - " + str(el[1]) + "% errors")
+        print(el[0] + " - " + str(round(el[1] * 100, 2)) + "% errors")
